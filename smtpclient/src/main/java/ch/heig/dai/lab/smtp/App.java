@@ -8,6 +8,9 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        // Temp, les récupérer despuis args par la suite
+        String victimsListFile = "";
+        String messageListFile = "";
+        int groups = 5;
     }
 }
