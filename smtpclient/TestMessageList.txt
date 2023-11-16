@@ -1,0 +1,17 @@
+MSG_START
+subject : hello
+body : hello i am a legitimate email sent by a legitimate sender
+MSG_END
+
+MSG_START
+subject : pranked
+body : you just got SMTPranked!!!
+MSG_END
+
+MSG_START
+subject : subject
+body : message
+message continuation
+	still body
+		still in body!!!
+MSG_END
