@@ -8,4 +8,8 @@ public class Message {
         this.subject = subject;
         this.body = body;        
     }
+
+    public String toString() {
+        return "Subject : " + subject + "\nBody : " + body;
+    }
 }

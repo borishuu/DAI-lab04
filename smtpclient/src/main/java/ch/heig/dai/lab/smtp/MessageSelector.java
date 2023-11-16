@@ -13,7 +13,9 @@ public class MessageSelector {
 
     private final Charset ENCODING = StandardCharsets.UTF_8;
     private final String MESSAGE_START = "MSG_START";
-    private final String MESSAGE_end = "MSG_END";
+    private final String MESSAGE_END = "MSG_END";
+    private final String SUBJECT = "subject";
+    private final String BODY = "body";
 
     private String filePath;
     private File messagesFile;
@@ -22,17 +24,42 @@ public class MessageSelector {
     public MessageSelector(String filePath) {
         this.filePath = filePath;
         this.messagesFile = new File(filePath);
-        getFileMessages();
     }
 
-    private void getFileMessages() {
+    public void generateFileMessages() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messagesFile), ENCODING))) {
-            StringBuilder stringBuilder = new StringBuilder();
             String currentLine;
+            boolean readingEmail = false;
+            boolean readingBody = false;
+            String currentSubject = "";
+            StringBuilder currentBody = new StringBuilder();
 
             while ((currentLine = reader.readLine()) != null) {
-                if (currentLine.trim() == MESSAGE_START) {
-                    // début d'email
+                if (currentLine.trim().equals(MESSAGE_START)) {                        
+                    readingEmail = true;
+                    continue;
+                } else if (currentLine.trim().equals(MESSAGE_END)) {
+                    readingEmail = false;
+                    readingBody = false;
+                    messages.add(new Message(currentSubject, currentBody.toString()));
+                    currentSubject = new String();
+                    currentBody = new StringBuilder();
+                    continue;
+                }
+
+                if (readingEmail) {
+                    String[] splitLine = currentLine.split(":");
+                    if (splitLine[0].trim().equals(SUBJECT)) {
+                        currentSubject = splitLine[1].trim();
+                    } else if (splitLine[0].trim().equals(BODY)) {
+                        readingBody = true;
+                        currentBody.append(splitLine[1].trim());
+                    } else if (readingBody) {
+                        currentBody.append("\n");
+                        currentBody.append(currentLine);
+                    } else {
+                        throw new RuntimeException("Invalid file format");
+                    }
                 }
             }
 
@@ -42,4 +69,7 @@ public class MessageSelector {
         }
     }
 
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
 }
