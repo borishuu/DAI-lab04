@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MessageSelector {
 
@@ -19,6 +20,7 @@ public class MessageSelector {
 
     private String filePath;
     private File messagesFile;
+    private Random random = new Random();
     private ArrayList<Message> messages = new ArrayList<Message>();
 
     public MessageSelector(String filePath) {
@@ -71,5 +73,9 @@ public class MessageSelector {
 
     public ArrayList<Message> getMessages() {
         return messages;
+    }
+
+    public Message getRandoMessage() {
+        return messages.get(random.nextInt(messages.size()));
     }
 }
