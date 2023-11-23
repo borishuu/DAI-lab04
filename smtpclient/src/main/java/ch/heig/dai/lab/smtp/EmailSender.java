@@ -35,7 +35,7 @@ public class EmailSender {
         }
     }
 
-    private void sendEmailToGroup(ArrayList<String> group, Message message) {
+    public void sendEmailToGroup(ArrayList<String> group, Message message) {
         // first element of group is sender
         if (socket == null || socket.isClosed())
             return;
@@ -44,12 +44,17 @@ public class EmailSender {
             new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
             var out = new BufferedWriter(
             new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))) {
-                for (int i = 0; i < 10; i++) {
-                    out.write("Hello " + i);
-                    System.out.println("Echo: " + in.readLine());
+                out.write("EHLO " + ip);
+                
+                String line;
+                while ((line = in.readLine()) != null) {
+                    System.out.println(line);
                 }
-            } catch(IOException e) {
 
+                out.write("EHLO " + ip);
+
+            } catch(IOException e) {
+                System.out.println("Problem sending email : " + e);
             }
     }
 
