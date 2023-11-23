@@ -9,6 +9,14 @@ public class Message {
         this.body = body;        
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
     public String toString() {
         return "Subject : " + subject + "\nBody : " + body;
     }

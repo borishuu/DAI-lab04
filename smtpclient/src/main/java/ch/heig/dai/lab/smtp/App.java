@@ -31,8 +31,8 @@ public class App
 
         ArrayList<ArrayList<String>> emailsGroups = victimsFinder.getEmailsGroups(groups);
 
-        smtpClient.openConnection();
+        //smtpClient.openConnection();
         smtpClient.sendEmailToGroup(emailsGroups.get(0), selector.getRandoMessage());
-        smtpClient.closeConnection();
+        //smtpClient.closeConnection();
     }
 }
