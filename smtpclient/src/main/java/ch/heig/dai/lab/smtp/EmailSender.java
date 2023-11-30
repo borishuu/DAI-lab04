@@ -54,6 +54,7 @@ public class EmailSender {
                 
                 String line;
                 while ((line = in.readLine()) != null) {
+                    System.out.println(line);
                     if (line.charAt(3) == ' ')
                         break;
                 }
@@ -61,29 +62,43 @@ public class EmailSender {
                 out.write("MAIL FROM:<" + group.get(0) + ">\r\n");
                 out.flush();
 
-                if (in.readLine() != "250 OK")
+                if (!(line = in.readLine()).equals("250 OK"))
                     throw new IOException("not ok");
+                System.out.println(line);
 
                 for (int i = 1; i < group.size(); ++i) {
                     out.write("RCPT TO:<" + group.get(i) + ">\r\n");
                     out.flush();
 
-                    if (in.readLine() != "250 OK")
+                    if (!(line = in.readLine()).equals("250 OK"))
                         throw new IOException("not ok");
+                    System.out.println(line);
                 }
 
                 out.write("DATA\r\n");
                 out.flush();
 
-                if (in.readLine().substring(0, 3) != "354")
+                if (!(line = in.readLine()).split(" ")[0].equals("354"))
                     throw new IOException("not ok");
+                System.out.println(line);
                 
                 out.write("Date: " + LocalDateTime.now() + "\r\n");
                 out.write("From: " + group.get(0) + "\r\n");
                 out.write("Subject: " + message.getSubject() + "\r\n");
                 out.write("To: " + group.get(1) + "\r\n");
-                out.write(message.getBody());            
+                out.write(message.getBody());
+                out.flush();
 
+                if (!(line = in.readLine()).equals("250 OK"))
+                        throw new IOException("not ok");
+                System.out.println(line);
+
+                out.write("QUIT\r\n");
+                out.flush();
+
+                if (!(line = in.readLine()).split(" ")[0].equals("221"))
+                    throw new IOException("not ok");
+                System.out.println(line);
             } catch(IOException e) {
                 System.out.println("Problem sending email : " + e);
             }
