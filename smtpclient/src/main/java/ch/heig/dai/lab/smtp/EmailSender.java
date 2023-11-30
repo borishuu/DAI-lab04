@@ -16,14 +16,14 @@ import javax.management.RuntimeErrorException;
 public class EmailSender {
     private final String ip;
     private final int port;
-    //private Socket socket;
+    private Socket socket;
 
     public EmailSender(String ip, int port) {
         this.ip = ip;
         this.port = port;
     }
 
-    /*public void openConnection() {
+    public void openConnection() {
         try {
             socket = new Socket(ip, port);            
         } catch(IOException e) {
@@ -37,13 +37,12 @@ public class EmailSender {
         } catch(IOException e) {
             System.out.println("Problem closing connection : " + e);
         }
-    }*/
+    }
 
     public void sendEmailToGroup(ArrayList<String> group, Message message) {
         // first element of group is sender
 
-        try(Socket socket = new Socket(ip, port);
-            var in = new BufferedReader(
+        try(var in = new BufferedReader(
             new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
             var out = new BufferedWriter(
             new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))) {
@@ -62,7 +61,7 @@ public class EmailSender {
                 out.write("MAIL FROM:<" + group.get(0) + ">\r\n");
                 out.flush();
 
-                if (!(line = in.readLine()).equals("250 OK"))
+                if (!(line = in.readLine()).split(" ")[0].equals("250"))
                     throw new IOException("not ok");
                 System.out.println(line);
 
@@ -70,7 +69,7 @@ public class EmailSender {
                     out.write("RCPT TO:<" + group.get(i) + ">\r\n");
                     out.flush();
 
-                    if (!(line = in.readLine()).equals("250 OK"))
+                    if (!(line = in.readLine()).split(" ")[0].equals("250"))
                         throw new IOException("not ok");
                     System.out.println(line);
                 }
@@ -82,14 +81,24 @@ public class EmailSender {
                     throw new IOException("not ok");
                 System.out.println(line);
                 
+                StringBuilder sb = new StringBuilder();
+
                 out.write("Date: " + LocalDateTime.now() + "\r\n");
                 out.write("From: " + group.get(0) + "\r\n");
                 out.write("Subject: " + message.getSubject() + "\r\n");
-                out.write("To: " + group.get(1) + "\r\n");
-                out.write(message.getBody());
+                out.write("To: " + group.get(1));
+                for (int i = 2; i < group.size(); ++i) {
+                    
+                    out.write(", " + group.get(i));
+                }
+                
+                out.write("\r\n\r\n" + message.getBody() + "\r\n");
+
+
+                out.write(".\r\n");
                 out.flush();
 
-                if (!(line = in.readLine()).equals("250 OK"))
+                if (!(line = in.readLine()).split(" ")[0].equals("250"))
                         throw new IOException("not ok");
                 System.out.println(line);
 

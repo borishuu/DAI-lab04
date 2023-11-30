@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
 public class VictimsFinder {
     private final ArrayList<String> victimsEmails = new ArrayList<>();
 
-    public ArrayList<String> getVictimsEmails(File file) {
+    public ArrayList<String> getVictimsEmails(String fileName) {
+        File file = new File(fileName);
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));) {
 

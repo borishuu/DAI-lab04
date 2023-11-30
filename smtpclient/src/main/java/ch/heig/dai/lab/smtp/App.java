@@ -1,6 +1,5 @@
 package ch.heig.dai.lab.smtp;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -14,10 +13,10 @@ public class App
         final String ip = "localhost";
         final int port = 1025;
 
-        // Temp, les récupérer despuis args par la suite
-        String victimsListFile = "";
-        String messageListFile = "smtpclient/TestMessageList.txt";
-        int groups = 5;
+        // Temp, les récupérer despuis args par la suit
+        String victimsList = args[1];
+        String messageListFile = args[2];
+        int groups = Integer.parseInt(args[3]);
 
         // Test de VictimsFinder
         VictimsFinder victimsFinder = new VictimsFinder();
@@ -25,14 +24,16 @@ public class App
         EmailSender smtpClient = new EmailSender(ip, port);
 
         //File file = new File("C:\\Users\\yanis\\OneDrive\\HEIG-VD\\2eme-annee\\1er-semestre\\DAI\\LABOS\\DAI-lab04\\smtpclient\\src\\test\\testAddress");
-        File file = new File("smtpclient/testAddress");
-        victimsFinder.getVictimsEmails(file);
+        //File file = new File("smtpclient/testAddress");
+        victimsFinder.getVictimsEmails(victimsList);
         selector.generateFileMessages();
 
         ArrayList<ArrayList<String>> emailsGroups = victimsFinder.getEmailsGroups(groups);
 
-        //smtpClient.openConnection();
-        smtpClient.sendEmailToGroup(emailsGroups.get(0), selector.getRandoMessage());
-        //smtpClient.closeConnection();
+        smtpClient.openConnection();
+        for (ArrayList<String> group : emailsGroups) {
+            smtpClient.sendEmailToGroup(group, selector.getRandoMessage());
+        }
+        smtpClient.closeConnection();
     }
 }
