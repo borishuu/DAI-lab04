@@ -26,7 +26,7 @@ public class App
         MessageSelector selector = new MessageSelector();
         EmailSender smtpClient = new EmailSender(ip, port);
 
-        // Génération des données
+        // Data generation
         try {
             victimsFinder.generateVictimEmails(victimsList);
             selector.generateFileMessages(messageListFile);
