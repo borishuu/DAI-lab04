@@ -3,37 +3,56 @@ package ch.heig.dai.lab.smtp;
 import java.util.ArrayList;
 
 /**
- * Hello world!
- *
+ * Contains program logic
+ * 
+ * @author Ouadahi Yanis
+ * @author Hutzli Boris
  */
 public class App 
 {
     public static void main( String[] args )
     {
+        // IP and port to connect to
         final String ip = "localhost";
         final int port = 1025;
 
-        // Temp, les récupérer despuis args par la suit
-        String victimsList = args[1];
-        String messageListFile = args[2];
-        int groups = Integer.parseInt(args[3]);
+        // Retrieving arguments
+        String victimsList = args[0];
+        String messageListFile = args[1];
+        int groups = Integer.parseInt(args[2]);
 
-        // Test de VictimsFinder
+        // Class initialisation
         VictimsFinder victimsFinder = new VictimsFinder();
-        MessageSelector selector = new MessageSelector(messageListFile);
+        MessageSelector selector = new MessageSelector();
         EmailSender smtpClient = new EmailSender(ip, port);
 
-        //File file = new File("C:\\Users\\yanis\\OneDrive\\HEIG-VD\\2eme-annee\\1er-semestre\\DAI\\LABOS\\DAI-lab04\\smtpclient\\src\\test\\testAddress");
-        //File file = new File("smtpclient/testAddress");
-        victimsFinder.getVictimsEmails(victimsList);
-        selector.generateFileMessages();
+        // Génération des données
+        try {
+            victimsFinder.generateVictimEmails(victimsList);
+            selector.generateFileMessages(messageListFile);
+        } catch (RuntimeException e) {
+            System.out.println("Data generation error : " + e);
+            return;
+        }
 
+        // Retrieve email groups
         ArrayList<ArrayList<String>> emailsGroups = victimsFinder.getEmailsGroups(groups);
 
-        smtpClient.openConnection();
-        for (ArrayList<String> group : emailsGroups) {
-            smtpClient.sendEmailToGroup(group, selector.getRandoMessage());
+        // Send a random email to each group
+        for (int i = 0; i < emailsGroups.size(); ++i) {
+            ArrayList<String> group = emailsGroups.get(i);
+            Message message = selector.getRandoMessage();
+
+            smtpClient.sendEmailToGroup(group, message);  
+
+            System.out.println("Group " + (i + 1) + " pranked :");
+            System.out.println("-----------------");
+
+            for (String email : group) {
+                System.out.println(email);
+            }
+            
+            System.out.println("\n" + message + "\n");
         }
-        smtpClient.closeConnection();
     }
 }

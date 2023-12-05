@@ -7,111 +7,119 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import javax.management.RuntimeErrorException;
-
+/**
+ * SMTP Client sending an email to a group of email addresses
+ * 
+ * @author Ouadahi Yanis
+ * @author Hutzli Boris
+ */
 public class EmailSender {
+    /** SMTP server IP */
     private final String ip;
-    private final int port;
-    private Socket socket;
 
+    /** SMTP server port */
+    private final int port;
+
+    /**
+     * Constructor
+     * 
+     * @param ip   SMTP server IP address to connect to
+     * @param port SMTP server port to connect to
+     */
     public EmailSender(String ip, int port) {
         this.ip = ip;
         this.port = port;
     }
 
-    public void openConnection() {
-        try {
-            socket = new Socket(ip, port);            
-        } catch(IOException e) {
-            System.out.println("Problem openning connection : " + e);
-        }
-    }
-
-    public void closeConnection() {
-        try {
-            socket.close();
-        } catch(IOException e) {
-            System.out.println("Problem closing connection : " + e);
-        }
-    }
-
+    /**
+     * Sends an email to email addresses in a group
+     * 
+     * @param group   List containing email addresses (the first one is the sender)
+     * @param message Email to be sent
+     */
     public void sendEmailToGroup(ArrayList<String> group, Message message) {
-        // first element of group is sender
+        try (Socket socket = new Socket(ip, port);
+                var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))) {
 
-        try(var in = new BufferedReader(
-            new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-            var out = new BufferedWriter(
-            new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))) {
-                System.out.println(in.readLine());
+            // Reading connection message (220)
+            in.readLine();
 
-                out.write("EHLO heig.ch\r\n");
-                out.flush();
-                
-                String line;
-                while ((line = in.readLine()) != null) {
-                    System.out.println(line);
-                    if (line.charAt(3) == ' ')
-                        break;
-                }
+            // Sending ehlo
+            out.write("EHLO heig.ch\r\n");
+            out.flush();
 
-                out.write("MAIL FROM:<" + group.get(0) + ">\r\n");
-                out.flush();
+            String line;
 
-                if (!(line = in.readLine()).split(" ")[0].equals("250"))
-                    throw new IOException("not ok");
-                System.out.println(line);
-
-                for (int i = 1; i < group.size(); ++i) {
-                    out.write("RCPT TO:<" + group.get(i) + ">\r\n");
-                    out.flush();
-
-                    if (!(line = in.readLine()).split(" ")[0].equals("250"))
-                        throw new IOException("not ok");
-                    System.out.println(line);
-                }
-
-                out.write("DATA\r\n");
-                out.flush();
-
-                if (!(line = in.readLine()).split(" ")[0].equals("354"))
-                    throw new IOException("not ok");
-                System.out.println(line);
-                
-                StringBuilder sb = new StringBuilder();
-
-                out.write("Date: " + LocalDateTime.now() + "\r\n");
-                out.write("From: " + group.get(0) + "\r\n");
-                out.write("Subject: " + message.getSubject() + "\r\n");
-                out.write("To: " + group.get(1));
-                for (int i = 2; i < group.size(); ++i) {
-                    
-                    out.write(", " + group.get(i));
-                }
-                
-                out.write("\r\n\r\n" + message.getBody() + "\r\n");
-
-
-                out.write(".\r\n");
-                out.flush();
-
-                if (!(line = in.readLine()).split(" ")[0].equals("250"))
-                        throw new IOException("not ok");
-                System.out.println(line);
-
-                out.write("QUIT\r\n");
-                out.flush();
-
-                if (!(line = in.readLine()).split(" ")[0].equals("221"))
-                    throw new IOException("not ok");
-                System.out.println(line);
-            } catch(IOException e) {
-                System.out.println("Problem sending email : " + e);
+            // Reading responses until the character at index 3 is a whitespace (end of message)
+            while ((line = in.readLine()) != null) {
+                if (line.charAt(3) == ' ')
+                    break;
             }
-    }
 
-    //public void sendEmailsToGroups(ArrayList<ArrayList<String>> groups, )
+            // Setting sender email
+            out.write("MAIL FROM:<" + group.get(0) + ">\r\n");
+            out.flush();
+
+            // Reading server's 250 message if everything goes well
+            if (!(line = in.readLine()).split(" ")[0].equals("250"))
+                throw new IOException("Problem reading socket input stream");
+
+            // Setting receiver emails
+            for (int i = 1; i < group.size(); ++i) {
+                out.write("RCPT TO:<" + group.get(i) + ">\r\n");
+                out.flush();
+
+                // Reading server's 250 message if everything goes well
+                if (!(line = in.readLine()).split(" ")[0].equals("250"))
+                    throw new IOException("Problem reading socket input stream");
+            }
+
+            // Sending data
+            out.write("DATA\r\n");
+            out.flush();
+
+            // Reading server's 354 message if everything goes well
+            if (!(line = in.readLine()).split(" ")[0].equals("354"))
+                throw new IOException("Problem reading socket input stream");
+
+            // Date of sending
+            out.write("Date: " + LocalDateTime.now() + "\r\n");
+
+            // Sender
+            out.write("From: " + group.get(0) + "\r\n");
+
+            // Email subject
+            out.write("Subject: " + message.getSubject() + "\r\n");
+
+            // Receivers
+            out.write("To: " + group.get(1));
+            for (int i = 2; i < group.size(); ++i)
+                out.write(", " + group.get(i));
+
+            // Email body
+            out.write("\r\n\r\n" + message.getBody() + "\r\n");
+
+            out.write(".\r\n");
+            out.flush();
+
+            // Reading server's 250 message if everything goes well
+            if (!(line = in.readLine()).split(" ")[0].equals("250"))
+                throw new IOException("Problem reading socket input stream");
+
+            // Connection termination
+            out.write("QUIT\r\n");
+            out.flush();
+
+            // Reading server's 221 message if everything goes well
+            if (!(line = in.readLine()).split(" ")[0].equals("221"))
+                throw new IOException("Problem reading socket input stream");
+
+        } catch (IOException e) {
+            System.out.println("Problem sending email : " + e);
+        }
+    }
 }
