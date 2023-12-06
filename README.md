@@ -37,11 +37,11 @@ To configure and run the prank campaign, follow these steps:
 3. Edit the configuration files:
    - Edit `victims` to include a list of victim email addresses.
    - Edit `messages` to define email messages, following the specified format :
-
-   "MSG_START" to define the start of a new message
-   "MSG_END" to define the end of the message
-   "subject :" to define the subject of the email
-   "body :" to define the body of the email
+     - "MSG_START" to define the start of a new message  
+     - "MSG_END" to define the end of the message  
+     - "subject :" to define the subject of the email  
+     - "body :" to define the body of the email
+   
 
    There can't be any blank lines between MSG_START and MSG_END.
    Example : 
@@ -57,7 +57,7 @@ To configure and run the prank campaign, follow these steps:
    
    ```bash
    mvn clean package
-   java -jar .\target\smtpclient-1.jar victimes messages <nbGroups>
+   java -jar .\target\smtpclient-1.jar victims messages <nbGroups>
    ```
 
 5. Observe the output in the console, and check the MailDev Web interface (`http://localhost:1080`) for received prank emails.

@@ -32,7 +32,6 @@ public class MessageSelector {
         File messagesFile = new File(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messagesFile), StandardCharsets.UTF_8))) {
 
-
             // Strings representing the START and END of a message, the SUBJECT and BODY definitions in the file
             String MESSAGE_START = "MSG_START", MESSAGE_END = "MSG_END", SUBJECT = "subject", BODY = "body";
 
