@@ -62,7 +62,7 @@ public class VictimsFinder {
 
             reader.close();
         } catch (IOException e) {
-            System.out.println("Problem generating victimEmails : " + e);
+            System.out.println("Problem generating victimc emails");
         }
     }
 

@@ -94,7 +94,7 @@ public class MessageSelector {
 
             reader.close();
         } catch (IOException e) {
-            System.out.println("Problem reading emails file : " + e);
+            System.out.println("Problem reading emails file");
         }
     }
 

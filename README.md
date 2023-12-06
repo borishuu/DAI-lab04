@@ -76,20 +76,6 @@ The implementation consists of the following key components:
 
 The interactions with the mock SMTP server follow the SMTP protocol, including EHLO, MAIL FROM, RCPT TO, DATA, and QUIT commands.
 
-## Class Diagram
-
-```
-+------------------+       +------------------+       +--------------+
-|   VictimsFinder  |       |  MessageSelector |       |  EmailSender |
-+------------------+       +------------------+       +--------------+
-          |                          |                         |
-          +--------------------------|-------------------------+
-                                     |
-                              +--------------+
-                              |   Message    |
-                              +--------------+
-```
-
 ## Example Dialogue
 
 1. **VictimsFinder:** Reads victim email addresses and generates random groups.
