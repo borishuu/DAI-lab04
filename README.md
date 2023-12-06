@@ -31,18 +31,33 @@ To configure and run the prank campaign, follow these steps:
 2. Navigate to the project directory:
 
    ```bash
-   cd smtp-prank-campaign
+   cd smtpclient
    ```
 
 3. Edit the configuration files:
-   - Edit `victims.txt` to include a list of victim email addresses.
-   - Edit `messages.txt` to define email messages, following the specified format.
+   - Edit `victims` to include a list of victim email addresses.
+   - Edit `messages` to define email messages, following the specified format :
 
-4. Compile and run the `PrankCampaign` class:
+   "MSG_START" to define the start of a new message
+   "MSG_END" to define the end of the message
+   "subject :" to define the subject of the email
+   "body :" to define the body of the email
+
+   There can't be any blank lines between MSG_START and MSG_END.
+   Example : 
+   ```
+   MSG_START
+   subject : email subject
+   body : email body
+   still in email body
+   MSG_END
+   ```
+
+4. Compile and run the program:
    
    ```bash
-   javac PrankCampaign.java
-   java PrankCampaign
+   mvn clean package
+   java -jar .\target\smtpclient-1.jar victimes messages <nbGroups>
    ```
 
 5. Observe the output in the console, and check the MailDev Web interface (`http://localhost:1080`) for received prank emails.
@@ -85,25 +100,17 @@ The interactions with the mock SMTP server follow the SMTP protocol, including E
 
 Example Console Output:
 ```
-Prank Campaign Started...
+Group 1 pranked :
+-----------------
+email.one@heig-vd.ch
+asdfh@eeeaaaaa.com
+asdsdvgsvbfh@eeee.com
+emailtwo@heig-vd.ch
 
-Group 1:
-- Sender: bob@example.com
-- Recipients: [alice@example.com, claire@example.com]
-- Message: "Greetings" - "Hello, this is a prank!"
+Subject : hello
+Body : hello i am a legitimate email sent by a legitimate sender
 
-Email sent successfully to bob@example.com
-
-Group 2:
+Group 2 pranked :
+-----------------
 ...
-
-Prank Campaign Completed.
 ```
-
-## Screenshots
-
-Include screenshots of the MailDev Web interface showing received prank emails.
-
----
-
-By following these instructions, users can easily configure and run a prank campaign using the provided SMTP client and mock server. The clear project structure and class responsibilities enhance understanding and maintainability.
