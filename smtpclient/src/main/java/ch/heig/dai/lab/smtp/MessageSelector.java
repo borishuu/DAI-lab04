@@ -17,23 +17,11 @@ import java.util.Random;
  */
 public class MessageSelector {
 
-    /** String representing the start of a message in the file */
-    private final String MESSAGE_START = "MSG_START";
-
-    /** String representing the end of a message in the file */
-    private final String MESSAGE_END = "MSG_END";
-
-    /** String representing the subject definition in the file */
-    private final String SUBJECT = "subject";
-
-    /** String representing the body definition in the file */
-    private final String BODY = "body";
-
     /** Random used to select a random message */
-    private Random random = new Random();
+    private final Random random = new Random();
 
     /** List containing all the messages */
-    private ArrayList<Message> messages = new ArrayList<Message>();
+    private final ArrayList<Message> messages = new ArrayList<>();
 
     /**
      * Reads and stores all messages in a given file
@@ -43,7 +31,11 @@ public class MessageSelector {
     public void generateFileMessages(String fileName) {
         File messagesFile = new File(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messagesFile), StandardCharsets.UTF_8))) {
-            
+
+
+            // Strings representing the START and END of a message, the SUBJECT and BODY definitions in the file
+            String MESSAGE_START = "MSG_START", MESSAGE_END = "MSG_END", SUBJECT = "subject", BODY = "body";
+
             // Line currently read
             String currentLine;
 
@@ -61,7 +53,7 @@ public class MessageSelector {
             // Read the whole file
             while ((currentLine = reader.readLine()) != null) {
                 // Start of message
-                if (currentLine.trim().equals(MESSAGE_START)) {                        
+                if (currentLine.trim().equals(MESSAGE_START)) {
                     readingEmail = true;
                     continue;
                 

@@ -22,12 +22,6 @@ public class VictimsFinder {
     /** List containing all emails to choose from */
     private final ArrayList<String> victimsEmails = new ArrayList<>();
 
-    /** Minimum amounts of emails in a group */
-    private final int randomMin = 2;
-
-    /** Maximum amounts of emails in a group */
-    private final int randomMax = 5;
-
     /**
      * Checks whether a given String is an email address
      * 
@@ -82,6 +76,8 @@ public class VictimsFinder {
 
         ArrayList<ArrayList<String>> emailsGroups = new ArrayList<>();
         Random random = new Random();
+        // Minimum and maximum amounts of emails in a group
+        final int randomMin = 2, randomMax = 5;
 
         for (int i = 0; i < n; ++i) {
 

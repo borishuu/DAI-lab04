@@ -65,7 +65,7 @@ public class EmailSender {
             out.flush();
 
             // Reading server's 250 message if everything goes well
-            if (!(line = in.readLine()).split(" ")[0].equals("250"))
+            if (!in.readLine().split(" ")[0].equals("250"))
                 throw new IOException("Problem reading socket input stream");
 
             // Setting receiver emails
@@ -74,7 +74,7 @@ public class EmailSender {
                 out.flush();
 
                 // Reading server's 250 message if everything goes well
-                if (!(line = in.readLine()).split(" ")[0].equals("250"))
+                if (!in.readLine().split(" ")[0].equals("250"))
                     throw new IOException("Problem reading socket input stream");
             }
 
@@ -83,7 +83,7 @@ public class EmailSender {
             out.flush();
 
             // Reading server's 354 message if everything goes well
-            if (!(line = in.readLine()).split(" ")[0].equals("354"))
+            if (!in.readLine().split(" ")[0].equals("354"))
                 throw new IOException("Problem reading socket input stream");
 
             // Date of sending
@@ -107,7 +107,7 @@ public class EmailSender {
             out.flush();
 
             // Reading server's 250 message if everything goes well
-            if (!(line = in.readLine()).split(" ")[0].equals("250"))
+            if (!in.readLine().split(" ")[0].equals("250"))
                 throw new IOException("Problem reading socket input stream");
 
             // Connection termination
@@ -115,7 +115,7 @@ public class EmailSender {
             out.flush();
 
             // Reading server's 221 message if everything goes well
-            if (!(line = in.readLine()).split(" ")[0].equals("221"))
+            if (!in.readLine().split(" ")[0].equals("221"))
                 throw new IOException("Problem reading socket input stream");
 
         } catch (IOException e) {

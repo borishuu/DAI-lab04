@@ -9,10 +9,10 @@ package ch.heig.dai.lab.smtp;
 public class Message {
 
     /** Email subject */
-    private String subject;
+    private final String subject;
 
     /** Email body */
-    private String body;
+    private final String body;
 
     /**
      * Constructor

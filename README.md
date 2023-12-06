@@ -8,7 +8,7 @@ This project implements a TCP client application in Java for orchestrating an em
 
 To facilitate testing without sending real emails, a mock SMTP server is used. Follow these steps to set up the mock server:
 
-1. Install Docker on your machine if not already installed.
+1. [Install Docker](https://docs.docker.com/get-docker/) on your machine if not already installed.
 
 2. Run the following Docker command to start the MailDev mock SMTP server:
 
@@ -16,13 +16,13 @@ To facilitate testing without sending real emails, a mock SMTP server is used. F
    docker run -d -p 1080:1080 -p 1025:1025 maildev/maildev
    ```
 
-3. Access the MailDev Web interface at `http://localhost:1080` to view received emails.
+3. Access the MailDev Web interface at [http://localhost:1080](http://localhost:1080) to view received emails.
 
 ## Configuring and Running Prank Campaign
 
 To configure and run the prank campaign, follow these steps:
 
-1. Clone the repository:
+1. Clone the repository somewhere on your disk:
 
    ```bash
    git clone <repository_url>
@@ -65,13 +65,13 @@ The interactions with the mock SMTP server follow the SMTP protocol, including E
 
 ```
 +------------------+       +------------------+       +--------------+
-| VictimsFinder    |       | MessageSelector  |       | EmailSender  |
+|   VictimsFinder  |       |  MessageSelector |       |  EmailSender |
 +------------------+       +------------------+       +--------------+
           |                          |                         |
           +--------------------------|-------------------------+
                                      |
                               +--------------+
-                              |   Message   |
+                              |   Message    |
                               +--------------+
 ```
 
