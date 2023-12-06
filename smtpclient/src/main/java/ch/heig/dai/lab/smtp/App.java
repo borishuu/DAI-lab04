@@ -19,7 +19,17 @@ public class App
         // Retrieving arguments
         String victimsList = args[0];
         String messageListFile = args[1];
-        int groups = Integer.parseInt(args[2]);
+        int groups;
+        try {
+           groups = Integer.parseInt(args[2]);
+        } catch (RuntimeException e) {
+            System.out.println("Groups must be a positive integer");
+            return;
+        } 
+        if (groups < 1) {
+            System.out.println("Groups must be a positive integer");
+            return;
+        }
 
         // Class initialisation
         VictimsFinder victimsFinder = new VictimsFinder();
