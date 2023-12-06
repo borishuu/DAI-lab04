@@ -76,6 +76,7 @@ public class VictimsFinder {
 
         ArrayList<ArrayList<String>> emailsGroups = new ArrayList<>();
         Random random = new Random();
+
         // Minimum and maximum amounts of emails in a group
         final int randomMin = 2, randomMax = 5;
 
