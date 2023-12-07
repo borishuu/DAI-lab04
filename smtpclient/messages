@@ -12,6 +12,7 @@ MSG_START
 subject : subject
 body : message
 message continuation
+
 	still body
 		still in body!!!
 MSG_END

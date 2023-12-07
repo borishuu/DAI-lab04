@@ -43,12 +43,13 @@ To configure and run the prank campaign, follow these steps:
      - "body :" to define the body of the email
    
 
-   There can't be any blank lines between MSG_START and MSG_END.
+   There can't be any blank lines between MSG_START and MSG_END except in body.
    Example : 
    ```
    MSG_START
    subject : email subject
    body : email body
+   
    still in email body
    MSG_END
    ```
